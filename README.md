@@ -24,15 +24,16 @@ A robust RESTful API for managing contacts, built with Java 17, Spring Boot 3, M
 
 The Contact entity represents the core data structure for storing contact information. Each contact has the following fields:
 
-| Field       | Type            | Description                                           |
-|-------------|-----------------|-------------------------------------------------------|
-| id          | Long            | Unique identifier for the contact (auto-generated)    |
-| firstName   | String          | First name of the contact                             |
-| lastName    | String          | Last name of the contact                              |
-| phone       | String          | Phone number of the contact                           |
-| countryCode | CountryCode     | Enum representing the country code of the phone number|
-| createdAt   | LocalDateTime   | Timestamp when the contact was created                |
-| updatedAt   | LocalDateTime   | Timestamp when the contact was last updated           |
+| Field       | Type          | Description                                                              |
+|-------------|---------------|--------------------------------------------------------------------------|
+| id          | Long          | Unique identifier for the contact (auto-generated)                       |
+| firstName   | String        | First name of the contact                                                |
+| lastName    | String        | Last name of the contact                                                 |
+| phone       | String        | Phone number of the contact                                              |
+| address     | String        | Address of the contact                                                   |
+| countryCode | CountryCode   | Enum representing the country code of the phone number, default value US |
+| createdAt   | LocalDateTime | Timestamp when the contact was created                                   |
+| updatedAt   | LocalDateTime | Timestamp when the contact was last updated                              |
 
 
 ### Notes:
@@ -40,6 +41,7 @@ The Contact entity represents the core data structure for storing contact inform
 - `firstName` and `lastName` are required fields and cannot be null or empty.
 - `phone` must follow a valid phone number format.
 - `countryCode` is an enum that represents the country code of the phone number. The default value is 'IL' (Israel).
+- `addess` is not required field.
 - `createdAt` is automatically set when a new contact is created.
 - `updatedAt` is automatically updated whenever the contact information is modified.
 
@@ -59,7 +61,7 @@ When interacting with the API, these fields will be represented in JSON format. 
   "id": 1,
   "firstName": "John",
   "lastName": "Doe",
-  "phone": "+1234567890",
+  "phone": "+9725089400",
   "countryCode": "IL",
   "createdAt": "2023-07-27T10:30:00",
   "updatedAt": "2023-07-27T10:30:00"
@@ -112,6 +114,9 @@ The application implements caching to improve performance for frequently accesse
 
 - Individual contacts (by ID)
 - List of contacts (paginated results)
+
+### Note:
+When updating/creating it will remove all the cache to avoid data mismatching.
 
 ## Database Connection Pooling
 
