@@ -11,18 +11,14 @@ import jakarta.validation.constraints.Pattern;
 @Data
 public class ContactDTO {
     private Long id;
-
     @NotBlank(message = Constant.FIRST_NAME_REQUIRED)
     private String firstName;
-
     @NotBlank(message = Constant.LAST_NAME_REQUIRED)
     private String lastName;
-
     @NotBlank(message = Constant.PHONE_REQUIRED)
     @Pattern(regexp = "^\\+?(\\d{1,3})?[- ]?\\(?(\\d{1,4})\\)?[- ]?(\\d{1,4})[- ]?(\\d{1,4})[- ]?(\\d{1,9})$"
-            , message = Constant.PHONE_NUMBER_ERROR)
+            ,message = Constant.PHONE_NUMBER_ERROR)
     private String phone;
-
     private CountryCode countryCode = CountryCode.IL;
-
+    private String address;
 }

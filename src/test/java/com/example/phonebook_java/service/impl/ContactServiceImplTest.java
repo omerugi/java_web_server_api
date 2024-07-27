@@ -111,7 +111,7 @@ class ContactServiceImplTest {
 
     @Test
     void updateContact() {
-        ContactUpdateDTO updatedDTO = new ContactUpdateDTO();
+        ContactDTO updatedDTO = new ContactDTO();
         updatedDTO.setFirstName("Jane");
         updatedDTO.setLastName("Smith");
         updatedDTO.setPhone("+12025550139");

@@ -17,6 +17,7 @@ public class ContactMapper {
         dto.setLastName(contact.getLastName());
         dto.setPhone(contact.getPhone());
         dto.setCountryCode(contact.getCountryCode());
+        dto.setAddress(contact.getAddress());
         return dto;
     }
 
@@ -28,6 +29,7 @@ public class ContactMapper {
         contact.setLastName(dto.getLastName());
         contact.setPhone(dto.getPhone());
         contact.setCountryCode(dto.getCountryCode());
+        contact.setAddress(dto.getAddress());
         return contact;
     }
 }

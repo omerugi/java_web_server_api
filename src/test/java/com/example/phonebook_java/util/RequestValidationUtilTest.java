@@ -15,8 +15,8 @@ class RequestValidationUtilTest {
     @Test
     void isValidPageAndSize_ValidInput() {
         assertAll(
-                () -> assertTrue(RequestValidationUtil.isValidPageAndSize(0, 10)),
-                () -> assertTrue(RequestValidationUtil.isValidPageAndSize(1, 5))
+                () -> assertTrue(RequestUtil.isValidPageAndSize(0, 10)),
+                () -> assertTrue(RequestUtil.isValidPageAndSize(1, 5))
         );
     }
 
@@ -28,7 +28,7 @@ class RequestValidationUtilTest {
     })
     void isValidPageAndSize_InvalidInput(int page, int size, String expectedMessage) {
         BadPhonebookRequestException exception = assertThrows(BadPhonebookRequestException.class,
-                () -> RequestValidationUtil.isValidPageAndSize(page, size));
+                () -> RequestUtil.isValidPageAndSize(page, size));
         assertTrue(exception.getMessage().contains(expectedMessage));
     }
 
@@ -42,7 +42,7 @@ class RequestValidationUtilTest {
             "+1 (202) 555-0139" // International format with US country code
     })
     void isValidPhoneNumberUsing_ValidPhoneNumbers(String phoneNumber) {
-        assertTrue(RequestValidationUtil.isValidPhoneNumberUsing(phoneNumber, CountryCode.US));
+        assertTrue(RequestUtil.isValidPhoneNumberUsing(phoneNumber, CountryCode.US));
     }
 
     @ParameterizedTest
@@ -54,7 +54,7 @@ class RequestValidationUtilTest {
     })
     void isValidPhoneNumberUsing_InvalidPhoneNumbers(String phoneNumber) {
         BadPhonebookRequestException exception = assertThrows(BadPhonebookRequestException.class,
-                () -> RequestValidationUtil.isValidPhoneNumberUsing(phoneNumber, CountryCode.US));
+                () -> RequestUtil.isValidPhoneNumberUsing(phoneNumber, CountryCode.US));
         assertEquals(Constant.PHONE_NUMBER_ERROR, exception.getMessage());
     }
 }

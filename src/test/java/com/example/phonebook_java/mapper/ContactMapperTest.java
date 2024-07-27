@@ -19,17 +19,14 @@ class ContactMapperTest {
 
     @Test
     void testToDTO() {
-        // Given
         Contact contact = new Contact();
         contact.setId(1L);
         contact.setFirstName("John");
         contact.setLastName("Doe");
         contact.setPhone("+1234567890");
 
-        // When
         ContactDTO dto = contactMapper.toDTO(contact);
 
-        // Then
         assertNotNull(dto);
         assertEquals(contact.getId(), dto.getId());
         assertEquals(contact.getFirstName(), dto.getFirstName());
@@ -39,17 +36,14 @@ class ContactMapperTest {
 
     @Test
     void testToEntity() {
-        // Given
         ContactDTO dto = new ContactDTO();
         dto.setId(1L);
         dto.setFirstName("Jane");
         dto.setLastName("Doe");
         dto.setPhone("+0987654321");
 
-        // When
         Contact contact = contactMapper.toEntity(dto);
 
-        // Then
         assertNotNull(contact);
         assertEquals(dto.getId(), contact.getId());
         assertEquals(dto.getFirstName(), contact.getFirstName());

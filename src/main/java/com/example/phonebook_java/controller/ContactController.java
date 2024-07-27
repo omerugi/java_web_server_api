@@ -1,10 +1,9 @@
 package com.example.phonebook_java.controller;
 
 import com.example.phonebook_java.dto.ContactDTO;
-import com.example.phonebook_java.dto.ContactUpdateDTO;
 import com.example.phonebook_java.model.Contact;
 import com.example.phonebook_java.service.ContactService;
-import com.example.phonebook_java.util.RequestValidationUtil;
+import com.example.phonebook_java.util.RequestUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -38,7 +37,7 @@ public class ContactController {
     public ResponseEntity<Page<ContactDTO>> getContacts(
             @Parameter(description = "Page number") @RequestParam(defaultValue = "0") int page,
             @Parameter(description = "Number of items per page") @RequestParam(defaultValue = "10") int size) {
-        RequestValidationUtil.isValidPageAndSize(page,size);
+        RequestUtil.isValidPageAndSize(page,size);
         Pageable pageable = PageRequest.of(page, size);
         Page<ContactDTO> contacts = contactService.getContactsDTO(pageable);
         return ResponseEntity.ok(contacts);
@@ -72,7 +71,7 @@ public class ContactController {
     @ApiResponse(responseCode = "404", description = "Contact not found")
     public ResponseEntity<ContactDTO> updateContact(
             @Parameter(description = "Contact ID") @PathVariable Long id,
-            @Parameter(description = "Updated contact") @Valid @RequestBody ContactUpdateDTO contact) {
+            @Parameter(description = "Updated contact") @RequestBody ContactDTO contact) {
         ContactDTO updatedContact = contactService.updateContact(id, contact);
         return ResponseEntity.ok(updatedContact);
     }

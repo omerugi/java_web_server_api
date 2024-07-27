@@ -1,11 +1,9 @@
 package com.example.phonebook_java.controller;
 
 import com.example.phonebook_java.dto.ContactDTO;
-import com.example.phonebook_java.dto.ContactUpdateDTO;
 import com.example.phonebook_java.exception.phonebook_exception.BadPhonebookRequestException;
 import com.example.phonebook_java.exception.phonebook_exception.ResourceNotFoundException;
 import com.example.phonebook_java.service.ContactService;
-import com.example.phonebook_java.util.RequestValidationUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -114,7 +112,7 @@ class ContactControllerTest {
 
     @Test
     void updateContact() throws Exception {
-        when(contactService.updateContact(eq(1L), any(ContactUpdateDTO.class))).thenReturn(contactDTO);
+        when(contactService.updateContact(eq(1L), any(ContactDTO.class))).thenReturn(contactDTO);
 
         mockMvc.perform(put("/api/contacts/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -124,7 +122,7 @@ class ContactControllerTest {
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.firstName").value("John"));
 
-        verify(contactService).updateContact(eq(1L), any(ContactUpdateDTO.class));
+        verify(contactService).updateContact(eq(1L), any(ContactDTO.class));
     }
 
     @Test
