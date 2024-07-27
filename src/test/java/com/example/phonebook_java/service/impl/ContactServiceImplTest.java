@@ -1,7 +1,6 @@
 package com.example.phonebook_java.service.impl;
 
 import com.example.phonebook_java.dto.ContactDTO;
-import com.example.phonebook_java.dto.ContactUpdateDTO;
 import com.example.phonebook_java.exception.phonebook_exception.ResourceNotFoundException;
 import com.example.phonebook_java.mapper.ContactMapper;
 import com.example.phonebook_java.model.Contact;
@@ -19,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -162,5 +162,54 @@ class ContactServiceImplTest {
         assertThrows(ResourceNotFoundException.class, () -> contactService.deleteContact(1L));
         verify(contactRepository).findById(1L);
         verify(contactRepository, never()).delete(any(Contact.class));
+    }
+
+    @Test
+    void testSearchContacts() {
+        String searchTerm = "John";
+        Pageable pageable = PageRequest.of(0, 10);
+
+        Contact contact1 = new Contact();
+        contact1.setId(1L);
+        contact1.setFirstName("John");
+        contact1.setLastName("Doe");
+        contact1.setPhone("1234567890");
+        contact1.setAddress("123 Main St");
+
+        Contact contact2 = new Contact();
+        contact2.setId(2L);
+        contact2.setFirstName("Jane");
+        contact2.setLastName("Doe");
+        contact2.setPhone("0987654321");
+        contact2.setAddress("456 Elm St");
+
+        List<Contact> contacts = Arrays.asList(contact1, contact2);
+        Page<Contact> contactPage = new PageImpl<>(contacts, pageable, contacts.size());
+
+        ContactDTO contactDTO1 = new ContactDTO();
+        contactDTO1.setId(1L);
+        contactDTO1.setFirstName("John");
+        contactDTO1.setLastName("Doe");
+        contactDTO1.setPhone("1234567890");
+        contactDTO1.setAddress("123 Main St");
+
+        ContactDTO contactDTO2 = new ContactDTO();
+        contactDTO2.setId(2L);
+        contactDTO2.setFirstName("Jane");
+        contactDTO2.setLastName("Doe");
+        contactDTO2.setPhone("0987654321");
+        contactDTO2.setAddress("456 Elm St");
+
+        when(contactRepository.searchContacts(searchTerm, pageable)).thenReturn(contactPage);
+        when(contactMapper.toDTO(contact1)).thenReturn(contactDTO1);
+        when(contactMapper.toDTO(contact2)).thenReturn(contactDTO2);
+
+        Page<ContactDTO> result = contactService.searchContacts(searchTerm, pageable);
+
+        assertEquals(2, result.getTotalElements());
+        assertEquals("John", result.getContent().get(0).getFirstName());
+        assertEquals("Jane", result.getContent().get(1).getFirstName());
+        verify(contactRepository, times(1)).searchContacts(searchTerm, pageable);
+        verify(contactMapper, times(2)).toDTO(any(Contact.class));
     }
 }

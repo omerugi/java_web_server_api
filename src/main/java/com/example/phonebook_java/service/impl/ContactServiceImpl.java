@@ -36,7 +36,7 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    @Cacheable(key = "#pageable")
+    @Cacheable(value = "getAllContactCache", key = "#pageable")
     @Transactional(readOnly = true)
     public Page<ContactDTO> getContactsDTO(Pageable pageable) {
         log.debug("Fetching contacts with pageable: {}", pageable);
@@ -56,6 +56,7 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     @CachePut(key = "#result.id")
+    @CacheEvict(value = {"getAllContactCache", "contactSearchCache"}, allEntries = true)
     @Transactional
     public ContactDTO createContact(ContactDTO contactDTO) {
         log.debug("Creating new contact: {}", contactDTO);
@@ -67,6 +68,7 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     @CachePut(key = "#id")
+    @CacheEvict(value = {"getAllContactCache", "contactSearchCache"}, allEntries = true)
     @Transactional
     public ContactDTO updateContact(Long id, ContactDTO contactDetails) {
         log.debug("Updating contact with id: {}", id);
@@ -79,7 +81,7 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    @CacheEvict(key = "#id")
+    @CacheEvict(value = {"contacts", "getAllContactCache", "contactSearchCache"}, allEntries = true)
     @Transactional
     public void deleteContact(Long id) {
         log.debug("Deleting contact with id: {}", id);
@@ -94,6 +96,15 @@ public class ContactServiceImpl implements ContactService {
                     log.error("Contact not found with id: {}", id);
                     return new ResourceNotFoundException(Constant.CONTACT_NOT_FOUND_ERROR + id);
                 });
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @Cacheable(value = "contactSearchCache", key = "#searchTerm + '_' + #pageable.pageNumber + '_' + #pageable.pageSize")
+    public Page<ContactDTO> searchContacts(String searchTerm, Pageable pageable) {
+        log.debug("Searching contacts with term: {} and pageable: {}", searchTerm, pageable);
+        Page<Contact> contacts = contactRepository.searchContacts(searchTerm, pageable);
+        return contacts.map(contactMapper::toDTO);
     }
 
 }

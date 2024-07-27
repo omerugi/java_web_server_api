@@ -85,6 +85,20 @@ public class ContactController {
         contactService.deleteContact(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/search")
+    @Operation(summary = "Search contacts", description = "Search contacts by term")
+    @ApiResponse(responseCode = "200", description = "Successful operation",
+            content = @Content(schema = @Schema(implementation = Page.class)))
+    public ResponseEntity<Page<ContactDTO>> searchContacts(
+            @Parameter(description = "Search term") @RequestParam String searchTerm,
+            @Parameter(description = "Page number") @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "Number of items per page") @RequestParam(defaultValue = "10") int size) {
+        log.debug("REST request to search contacts with term: {}", searchTerm);
+        Pageable pageable = PageRequest.of(page, Math.min(size, 10));
+        Page<ContactDTO> contacts = contactService.searchContacts(searchTerm, pageable);
+        return ResponseEntity.ok(contacts);
+    }
 }
 
 

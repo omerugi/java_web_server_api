@@ -31,7 +31,7 @@ public class Contact {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "country_code", nullable = false)
-    private CountryCode countryCode;
+    private CountryCode countryCode = CountryCode.US;;
 
     @Column(name = "address")
     private String address;

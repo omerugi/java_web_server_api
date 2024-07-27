@@ -19,6 +19,6 @@ public class ContactDTO {
     @Pattern(regexp = "^\\+?(\\d{1,3})?[- ]?\\(?(\\d{1,4})\\)?[- ]?(\\d{1,4})[- ]?(\\d{1,4})[- ]?(\\d{1,9})$"
             ,message = Constant.PHONE_NUMBER_ERROR)
     private String phone;
-    private CountryCode countryCode = CountryCode.IL;
+    private CountryCode countryCode = CountryCode.US;
     private String address;
 }

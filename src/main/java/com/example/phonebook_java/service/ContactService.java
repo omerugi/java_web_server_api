@@ -10,5 +10,6 @@ public interface ContactService {
     ContactDTO createContact(ContactDTO contactDTO);
     ContactDTO updateContact(Long id, ContactDTO contactDTO);
     void deleteContact(Long id);
+    Page<ContactDTO> searchContacts(String searchTerm, Pageable pageable);
 }
 
