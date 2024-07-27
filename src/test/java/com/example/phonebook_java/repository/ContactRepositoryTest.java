@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -16,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@ActiveProfiles("test")
 class ContactRepositoryTest {
 
 
@@ -34,6 +36,8 @@ class ContactRepositoryTest {
         contact.setCountryCode(CountryCode.US);
 
         Contact savedContact = contactRepository.save(contact);
+        entityManager.flush();
+        entityManager.clear();
 
         assertNotNull(savedContact.getId());
         assertEquals("John", savedContact.getFirstName());
@@ -83,6 +87,8 @@ class ContactRepositoryTest {
 
         Contact savedContact = contactRepository.save(contact);
         contactRepository.deleteById(savedContact.getId());
+        entityManager.flush();
+        entityManager.clear();
 
         Optional<Contact> deletedContact = contactRepository.findById(savedContact.getId());
         assertFalse(deletedContact.isPresent());
@@ -136,6 +142,8 @@ class ContactRepositoryTest {
         contact.setCountryCode(CountryCode.US);
 
         Contact savedContact = contactRepository.save(contact);
+        entityManager.flush();
+        entityManager.clear();
         assertNotNull(savedContact.getCreatedAt());
     }
 

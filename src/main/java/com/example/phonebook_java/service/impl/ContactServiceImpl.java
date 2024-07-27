@@ -12,12 +12,19 @@ import com.example.phonebook_java.util.RequestValidationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
+@CacheConfig(cacheNames = "contacts")
+@Transactional
 public class ContactServiceImpl implements ContactService {
 
     private final ContactRepository contactRepository;
@@ -30,6 +37,8 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
+    @Cacheable(key = "#pageable")
+    @Transactional(readOnly = true)
     public Page<ContactDTO> getContactsDTO(Pageable pageable) {
         log.debug("Fetching contacts with pageable: {}", pageable);
         Page<ContactDTO> contacts = contactRepository.findAll(pageable).map(contactMapper::toDTO);
@@ -38,6 +47,8 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
+    @Cacheable(key = "#id")
+    @Transactional(readOnly = true)
     public ContactDTO getContactDTOById(Long id) {
         log.debug("Fetching contact with id: {}", id);
         Contact contact = getContactById(id);
@@ -45,6 +56,8 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
+    @CachePut(key = "#result.id")
+    @Transactional
     public ContactDTO createContact(ContactDTO contactDTO) {
         log.debug("Creating new contact: {}", contactDTO);
         Contact contact = contactMapper.toEntity(contactDTO);
@@ -54,6 +67,8 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
+    @CachePut(key = "#id")
+    @Transactional
     public ContactDTO updateContact(Long id, ContactUpdateDTO contactDetails) {
         log.debug("Updating contact with id: {}", id);
         Contact contact = getContactById(id);
@@ -77,6 +92,8 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
+    @CacheEvict(key = "#id")
+    @Transactional
     public void deleteContact(Long id) {
         log.debug("Deleting contact with id: {}", id);
         Contact contact = getContactById(id);
