@@ -81,10 +81,10 @@ These instructions will get you a copy of the project up and running on your loc
 ### Setup and Running the Application
 1. Clone the repository: </br>
 ``` 
-git clone https://github.com/your-username/phonebook-api.git
+git clone https://github.com/omerugi/java_web_server_api.git
 ```
 ```
-cd phonebook-api
+cd java_web_server_api
 ```
 2. Build the Docker image:
 ```
