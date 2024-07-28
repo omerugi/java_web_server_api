@@ -10,32 +10,15 @@ import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 public class RequestUtil {
 
     private RequestUtil(){}
 
-    public static boolean isValidPageAndSize(int page, int size){
-        List<String> errors = new ArrayList<>();
-        if(page < 0)
-            errors.add(Constant.PAGE_VALUE_ERROR+page);
-        if(size < 0)
-            errors.add(Constant.SIZE_VALUE_ERROR+page);
-        if(size > 10)
-            errors.add(Constant.SIZE_LIMIT_ERROR+size);
-        if (!CollectionUtils.isEmpty(errors)) {
-            log.error(String.join("\n", errors));
-            throw new BadPhonebookRequestException(String.join("\n", errors));
-        }
-        return true;
-    }
-
     public static boolean isValidPhoneNumberUsing(String phoneNumber, CountryCode countryIsoCode) {
+        log.info("Validating phone number with country code {} {}",phoneNumber,countryIsoCode);
         PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
         try {
             Phonenumber.PhoneNumber numberProto = phoneUtil.parse(phoneNumber, countryIsoCode.getCountryName());
@@ -49,17 +32,29 @@ public class RequestUtil {
     }
 
     public static Contact updateFiled(ContactDTO contactFromReq, Contact contactFromDB) {
+        log.info("updating filed");
         Contact updatedContact = new Contact(contactFromDB);
-        if(StringUtils.isNotEmpty(contactFromReq.getFirstName()) && !contactFromReq.getFirstName().equals(updatedContact.getFirstName()))
+        if(StringUtils.isNotEmpty(contactFromReq.getFirstName()) && !contactFromReq.getFirstName().equals(updatedContact.getFirstName())) {
+            log.debug("updating first name from {} to {}", updatedContact.getFirstName(), contactFromReq.getFirstName());
             updatedContact.setFirstName(contactFromReq.getFirstName());
-        if(StringUtils.isNotEmpty(contactFromReq.getLastName()) && !contactFromReq.getLastName().equals(updatedContact.getLastName()))
+        }
+        if(StringUtils.isNotEmpty(contactFromReq.getLastName()) && !contactFromReq.getLastName().equals(updatedContact.getLastName())) {
+            log.debug("updating last name from {} to {}", updatedContact.getLastName(),  contactFromReq.getLastName());
             updatedContact.setLastName(contactFromReq.getLastName());
-        if(contactFromReq.getCountryCode() != null && !contactFromReq.getCountryCode().equals(updatedContact.getCountryCode()))
+        }
+        if(contactFromReq.getCountryCode() != null && !contactFromReq.getCountryCode().equals(updatedContact.getCountryCode())) {
+            log.debug("updating country code from {} to {}", updatedContact.getCountryCode(), contactFromReq.getCountryCode());
             updatedContact.setCountryCode(contactFromReq.getCountryCode());
-        if(StringUtils.isNotEmpty(contactFromReq.getPhone()) && !contactFromReq.getPhone().equals(updatedContact.getPhone()))
+        }
+        if(StringUtils.isNotEmpty(contactFromReq.getPhone()) && !contactFromReq.getPhone().equals(updatedContact.getPhone())) {
+            log.debug("updating phone from {} to {}", updatedContact.getPhone(), contactFromReq.getPhone());
             updatedContact.setPhone(contactFromReq.getPhone());
-        if(StringUtils.isNotEmpty(contactFromReq.getAddress()) && !contactFromReq.getAddress().equals(updatedContact.getAddress()))
+        }
+        if(contactFromReq.getAddress() != null && !contactFromReq.getAddress().equals(updatedContact.getAddress())) {
+            log.debug("updating address from {} to {}", updatedContact.getAddress(), contactFromReq.getAddress());
             updatedContact.setAddress(contactFromReq.getAddress());
+        }
+        log.info("Updated contact : {}", updatedContact);
         return updatedContact;
     }
 

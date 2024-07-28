@@ -2,7 +2,7 @@ package com.example.phonebook_java.controller;
 
 import com.example.phonebook_java.dto.ContactDTO;
 import com.example.phonebook_java.exception.phonebook_exception.BadPhonebookRequestException;
-import com.example.phonebook_java.exception.phonebook_exception.ResourceNotFoundException;
+import com.example.phonebook_java.exception.phonebook_exception.ContactNotFoundException;
 import com.example.phonebook_java.service.ContactService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -89,7 +89,7 @@ class ContactControllerTest {
 
     @Test
     void getContactById_NotFound() throws Exception {
-        when(contactService.getContactDTOById(1L)).thenThrow(new ResourceNotFoundException("Contact not found"));
+        when(contactService.getContactDTOById(1L)).thenThrow(new ContactNotFoundException("Contact not found"));
 
         mockMvc.perform(get("/api/contacts/1"))
                 .andExpect(status().isNotFound());

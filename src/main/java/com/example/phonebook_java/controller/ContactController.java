@@ -1,5 +1,6 @@
 package com.example.phonebook_java.controller;
 
+import com.example.phonebook_java.config.Constant;
 import com.example.phonebook_java.dto.ContactDTO;
 import com.example.phonebook_java.model.Contact;
 import com.example.phonebook_java.service.ContactService;
@@ -11,17 +12,21 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/contacts")
 @Slf4j
 @Tag(name = "Contact", description = "Contact management APIs")
+@Validated
 public class ContactController {
 
     private final ContactService contactService;
@@ -35,9 +40,14 @@ public class ContactController {
     @ApiResponse(responseCode = "200", description = "Successful operation",
             content = @Content(schema = @Schema(implementation = Page.class)))
     public ResponseEntity<Page<ContactDTO>> getContacts(
-            @Parameter(description = "Page number") @RequestParam(defaultValue = "0") int page,
-            @Parameter(description = "Number of items per page") @RequestParam(defaultValue = "10") int size) {
-        RequestUtil.isValidPageAndSize(page,size);
+            @Parameter(description = "Page number")
+            @RequestParam(defaultValue = "0")
+            @Min(value = 0, message = Constant.PAGE_VALUE_ERROR) int page,
+            @Parameter(description = "Number of items per page")
+            @RequestParam(defaultValue = "10")
+            @Min(value = 0, message = Constant.SIZE_VALUE_ERROR)
+            @Max(value = 10, message = Constant.SIZE_LIMIT_ERROR)
+            int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<ContactDTO> contacts = contactService.getContactsDTO(pageable);
         return ResponseEntity.ok(contacts);
@@ -46,7 +56,7 @@ public class ContactController {
     @GetMapping("/{id}")
     @Operation(summary = "Get a contact by ID", description = "Get a contact by its ID")
     @ApiResponse(responseCode = "200", description = "Successful operation",
-            content = @Content(schema = @Schema(implementation = Contact.class)))
+            content = @Content(schema = @Schema(implementation = ContactDTO.class)))
     @ApiResponse(responseCode = "404", description = "Contact not found")
     public ResponseEntity<ContactDTO> getContactById(
             @Parameter(description = "Contact ID") @PathVariable Long id) {
@@ -57,7 +67,7 @@ public class ContactController {
     @PostMapping
     @Operation(summary = "Create a new contact", description = "Create a new contact")
     @ApiResponse(responseCode = "200", description = "Successful operation",
-            content = @Content(schema = @Schema(implementation = Contact.class)))
+            content = @Content(schema = @Schema(implementation = ContactDTO.class)))
     public ResponseEntity<ContactDTO> createContact(
             @Parameter(description = "Contact to create") @Valid @RequestBody ContactDTO contact) {
         ContactDTO newContact = contactService.createContact(contact);
@@ -67,7 +77,7 @@ public class ContactController {
     @PutMapping("/{id}")
     @Operation(summary = "Update a contact", description = "Update an existing contact")
     @ApiResponse(responseCode = "200", description = "Successful operation",
-            content = @Content(schema = @Schema(implementation = Contact.class)))
+            content = @Content(schema = @Schema(implementation = ContactDTO.class)))
     @ApiResponse(responseCode = "404", description = "Contact not found")
     public ResponseEntity<ContactDTO> updateContact(
             @Parameter(description = "Contact ID") @PathVariable Long id,

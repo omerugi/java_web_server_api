@@ -2,9 +2,9 @@ package com.example.phonebook_java.config;
 
 public class Constant {
 
-    public static final String PAGE_VALUE_ERROR = "The input page value is not valid : ";
-    public static final String SIZE_VALUE_ERROR = "The input size value is not valid : ";
-    public static final String SIZE_LIMIT_ERROR = "The input size value is over the permitted limit of 10 : ";
+    public static final String PAGE_VALUE_ERROR = "The input page value must be more then 0";
+    public static final String SIZE_VALUE_ERROR = "The input size value must be more then 0";
+    public static final String SIZE_LIMIT_ERROR = "The input size value is over the permitted limit of 10";
     public static final String PHONE_NUMBER_ERROR = "The input phone number is not valid";
     public static final String CONTACT_NOT_FOUND_ERROR = "Contact not found with id: ";
 

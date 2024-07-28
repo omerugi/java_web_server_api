@@ -1,7 +1,7 @@
 package com.example.phonebook_java.service.impl;
 
 import com.example.phonebook_java.dto.ContactDTO;
-import com.example.phonebook_java.exception.phonebook_exception.ResourceNotFoundException;
+import com.example.phonebook_java.exception.phonebook_exception.ContactNotFoundException;
 import com.example.phonebook_java.mapper.ContactMapper;
 import com.example.phonebook_java.model.Contact;
 import com.example.phonebook_java.model.enums.CountryCode;
@@ -46,14 +46,14 @@ class ContactServiceImplTest {
         contact.setId(1L);
         contact.setFirstName("John");
         contact.setLastName("Doe");
-        contact.setPhone("+1234567890");
+        contact.setPhone("+12025550139");
         contact.setCountryCode(CountryCode.US);
 
         contactDTO = new ContactDTO();
         contactDTO.setId(1L);
         contactDTO.setFirstName("John");
         contactDTO.setLastName("Doe");
-        contactDTO.setPhone("+1234567890");
+        contactDTO.setPhone("+12025550139");
     }
 
     @Test
@@ -90,7 +90,7 @@ class ContactServiceImplTest {
     void getContactDTOById_NotFound() {
         when(contactRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(ResourceNotFoundException.class, () -> contactService.getContactDTOById(1L));
+        assertThrows(ContactNotFoundException.class, () -> contactService.getContactDTOById(1L));
         verify(contactRepository).findById(1L);
     }
 
@@ -159,7 +159,7 @@ class ContactServiceImplTest {
     void deleteContact_NotFound() {
         when(contactRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(ResourceNotFoundException.class, () -> contactService.deleteContact(1L));
+        assertThrows(ContactNotFoundException.class, () -> contactService.deleteContact(1L));
         verify(contactRepository).findById(1L);
         verify(contactRepository, never()).delete(any(Contact.class));
     }
